@@ -42,6 +42,14 @@ You can also use the app.py module to run a Flask web application that provides 
 
 To run the web application, run the following command in the terminal:
 
+1. Obtain an API key for the USDA FoodData Central API.
+
+2. Set the `FOODDATA_API_KEY` environment variable to your API key:
+
+```
+export FOODDATA_API_KEY=YOUR_API_KEY
+```
+3. 
 ```
 export FLASK_APP=app.py
 flask run
