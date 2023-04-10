@@ -1,9 +1,16 @@
+# src/nutrition.py
+
 import requests
+import os
+
+api_key = os.environ.get("FOODDATA_API_KEY")  # get the API key from an environment variable
+
+def get_url(ingredient):
+    return f"https://api.nal.usda.gov/fdc/v1/foods/search?api_key={api_key}&query={ingredient}"
 
 # Define a function to look up the nutritional information for an ingredient using the USDA FoodData Central API
 def lookup_nutrition(ingredient):
-    api_key = "YOUR_API_KEY" # Replace with your own API key
-    url = f"https://api.nal.usda.gov/fdc/v1/foods/search?api_key={api_key}&query={ingredient}"
+    url = get_url(ingredient)
     
     response = requests.get(url)
     
@@ -28,14 +35,12 @@ def lookup_nutrition(ingredient):
 
 # Define a function to calculate the nutritional intake
 def calculate_nutrition(items):
-    total_calories = 0
-    total_protein = 0
-    total_carbs = 0
-    total_fiber = 0
-    
-    for item, amount in items.items():
+    result = []
+    for item in items:
+        name = item["ingredient"]
+        amount = item["balance"]
         # Look up the nutritional information for the item
-        item_nutrients = lookup_nutrition(item)
+        item_nutrients = lookup_nutrition(name)
         
         if item_nutrients:
             # Calculate the nutritional intake for the given amount of the item
@@ -44,25 +49,22 @@ def calculate_nutrition(items):
             carbs = item_nutrients["carbs"] * amount / 100
             fiber = item_nutrients["fiber"] * amount / 100
             
-            # Add the nutritional intake to the total
-            total_calories += calories
-            total_protein += protein
-            total_carbs += carbs
-            total_fiber += fiber
-            
-            # Print the nutritional values for the item
-            print(f"{item} ({amount}g): {calories:.1f}kcal | {protein:.2f}g protein | {carbs:.2f}g carbs | {fiber:.1f}g fiber")
+            # Add the nutritional intake to the result list
+            result.append({
+                "ingredient": name,
+                "balance": amount,
+                "calories": calories,
+                "protein": protein,
+                "carbs": carbs,
+                "fiber": fiber
+            })
         else:
-            # Print an error message if the nutritional information is not found for the item
-            print(f"Error: Nutritional information not found for {item}")
+            # Add an error message to the result list if the nutritional information is not found for the item
+            result.append({
+                "ingredient": name,
+                "balance": amount,
+                "error": "Nutritional information not found"
+            })
     
-    # Print the total nutritional values
-    print(f"Total: {total_calories:.1f}kcal | {total_protein:.2f}g protein | {total_carbs:.2f}g carbs | {total_fiber:.1f}g fiber")
+    return result
 
-# Example usage:
-items = {
-    "apple": 198,
-    "banana": 100,
-}
-
-calculate_nutrition(items)
