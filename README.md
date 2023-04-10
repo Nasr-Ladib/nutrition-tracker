@@ -97,10 +97,9 @@ json
 
 To run the unit tests, you can use the following command:
 
+``` bash
 python -m unittest discover -v
-
-python
-Copy code
+```
 
 This will discover and run all the unit tests in the `test` directory and its subdirectories.
 
