@@ -93,6 +93,48 @@ json
 ]
 ```
 
+## Running the unit tests
+
+To run the unit tests, you can use the following command:
+
+python -m unittest discover -v
+
+python
+Copy code
+
+This will discover and run all the unit tests in the `test` directory and its subdirectories.
+
+### Unit Test Results
+
+The following are the results of the unit tests for the `nutrition` module:
+
+#### Test e: Test if the function adds an error message when the nutritional information is not found
+
+```python
+def test_calculate_nutrition(self):
+    items = [
+        {"ingredient": "chicken", "balance": 100},
+        {"ingredient": "dededezddfvergregttrhhrtyhrthrt", "balance": 200}
+    ]
+    result = src.nutrition.calculate_nutrition(items)
+    for item in result:
+        if item["ingredient"] == "nonexistent ingredient":
+            self.assertIn("error", item)
+            break
+    else:
+        self.fail("Error message not found")
+```
+
+You can run the unit tests using the above command, and the results will be displayed in the terminal.
+
+To generate a JSON report of the test results, you can use the following command:
+
+```
+python -m unittest discover -v -j <num_workers> --json-report
+```
+
+Replace <num_workers> with the number of worker processes to use for running the tests in parallel. This command will generate a JSON report file in the test-reports directory, which you can use to analyze the test results.
+
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
